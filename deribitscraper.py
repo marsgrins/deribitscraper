@@ -59,7 +59,7 @@ def addrowcsv(name):
         print('error: tried to add to nonexistant file')
 def scrapedatum(dbflong):
     name=dbflong['instrumentName']
-    filename='/home/mstead/deribitscraper/'name+'.csv'
+    filename='/home/mstead/deribitscraper/'+name+'.csv'
     if not os.path.isfile(filename):
         createdbcsv(dbflong)
     addrowcsv(name)
