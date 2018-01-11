@@ -31,7 +31,7 @@ def gscrape():
     return float(gmn.ticker('btcusd').json()['last'])
 def createdbcsv(dbflong):
     name=dbflong['instrumentName']
-    filename=name+'.csv'
+    filename='/home/mstead/'+name+'.csv'
     if os.path.isfile(filename):
         print('error: tried to overwrite data!')
     else:
@@ -45,7 +45,7 @@ def printcsv(name):
         for row in reader:
             print(row)
 def addrowcsv(name):
-    filename=name+'.csv'
+    filename='/home/mstead/'+name+'.csv'
     if os.path.isfile(filename):
         dbf=dbscrape(name)
         dbi=dbiscrape()
