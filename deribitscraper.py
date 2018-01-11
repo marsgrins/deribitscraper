@@ -31,7 +31,7 @@ def gscrape():
     return float(gmn.ticker('btcusd').json()['last'])
 def createdbcsv(dbflong):
     name=dbflong['instrumentName']
-    filename='/home/mstead/'+name+'.csv'
+    filename='/home/mstead/deribitscraper/'+name+'.csv'
     if os.path.isfile(filename):
         print('error: tried to overwrite data!')
     else:
@@ -45,7 +45,7 @@ def printcsv(name):
         for row in reader:
             print(row)
 def addrowcsv(name):
-    filename='/home/mstead/'+name+'.csv'
+    filename='/home/mstead/deribitscraper/'+name+'.csv'
     if os.path.isfile(filename):
         dbf=dbscrape(name)
         dbi=dbiscrape()
@@ -59,7 +59,7 @@ def addrowcsv(name):
         print('error: tried to add to nonexistant file')
 def scrapedatum(dbflong):
     name=dbflong['instrumentName']
-    filename=name+'.csv'
+    filename='/home/mstead/deribitscraper/'name+'.csv'
     if not os.path.isfile(filename):
         createdbcsv(dbflong)
     addrowcsv(name)
