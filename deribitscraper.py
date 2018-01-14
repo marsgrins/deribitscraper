@@ -5,6 +5,13 @@ from bitex import Gemini
 import time
 import csv
 import os.path
+import pandas
+from twilio.rest import Client
+
+spy=365*24*60*60
+spm=30*24*60*60
+spw=7*24*60*60
+spd=24*60*60
 
 dbclient=RestClient()
 gmn= Gemini()
@@ -52,9 +59,11 @@ def addrowcsv(name):
         g=gscrape()
         t1=time.time()
         t2=time.ctime()
+        row=[t1,t2,dbf,dbi,g]
+        alert(row, name)
         with open(filename,'a',newline='\n') as csvfile:
             filewriter=csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            filewriter.writerow([t1,t2,dbf,dbi,g])
+            filewriter.writerow(row)
     else:
         print('error: tried to add to nonexistant file')
 def scrapedatum(dbflong):
@@ -74,6 +83,38 @@ def scrapedata():
     n=len(dbfslong)
     for i in range(0,n):
         scrapedatum(dbfutureslong(ins)[i])
+def loadheader(name):
+    with open(name+'.csv') as csvfile:
+        raw = list(csv.reader(csvfile, delimiter=',', quotechar='|'))
+        header = json.loads(raw[0][0])
+    return header
+def loaddata(name):
+    d = pandas.read_csv(name+'.csv', header=1)
+    return d
+def age(d):
+    n=d.shape[0]-1
+    secs=(d.iloc[n]['floattime']-d.iloc[0]['floattime'])
+    return secs
+def ageindays(d):
+    return age(d)/spd
+def textme(message='no message'):
+    #assumes you have a text file in the same directory called "keys.txt" that has all the relevant stuff in a json-dumped dictionary
+    file = open('keys.txt', 'r') 
+    k=json.loads(file.read())
+    account_sid = k['account_sid']
+    auth_token = k['auth_token']
+    to = k['to']
+    from_ = k['from_']
+    client = Client(account_sid, auth_token)
+    client.messages.create(to=to, from_=from_, body=message)
+def alert(row, name):
+    delay=spd/4
+    if row[4]>row[2]:
+        d=loaddata(name)
+        if age(d)>delay:
+            start=row[0]-delay
+            if d[(d.floattime >= start) & (d.deribitlastprice < d.geminilastprice)].shape[0]==0:
+                textme('Deribit future '+name+' is trading below Gemini spot price')
 if __name__ == "__main__":
     scrapedata()
 
