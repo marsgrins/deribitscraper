@@ -89,7 +89,7 @@ def loadheader(name):
         header = json.loads(raw[0][0])
     return header
 def loaddata(name):
-    d = pandas.read_csv(name+'.csv', header=1)
+    d = pandas.read_csv('/home/mstead/deribitscraper/'+name+'.csv', header=1)
     return d
 def age(d):
     n=d.shape[0]-1
