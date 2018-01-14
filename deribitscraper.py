@@ -99,7 +99,7 @@ def ageindays(d):
     return age(d)/spd
 def textme(message='no message'):
     #assumes you have a text file in the same directory called "keys.txt" that has all the relevant stuff in a json-dumped dictionary
-    file = open('keys.txt', 'r') 
+    file = open('/home/mstead/deribitscraper/keys.txt', 'r') 
     k=json.loads(file.read())
     account_sid = k['account_sid']
     auth_token = k['auth_token']
