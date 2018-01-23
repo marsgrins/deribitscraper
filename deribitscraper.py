@@ -38,7 +38,7 @@ def gscrape():
     return float(gmn.ticker('btcusd').json()['last'])
 def createdbcsv(dbflong):
     name=dbflong['instrumentName']
-    filename='/home/mstead/deribitscraper/'+name+'.csv'
+    filename='/home/mstead/Dropbox/deribit/'+name+'.csv'
     if os.path.isfile(filename):
         print('error: tried to overwrite data!')
     else:
@@ -52,7 +52,7 @@ def printcsv(name):
         for row in reader:
             print(row)
 def addrowcsv(name):
-    filename='/home/mstead/deribitscraper/'+name+'.csv'
+    filename='/home/mstead/Dropbox/deribit/'+name+'.csv'
     if os.path.isfile(filename):
         dbf=dbscrape(name)
         dbi=dbiscrape()
@@ -68,7 +68,7 @@ def addrowcsv(name):
         print('error: tried to add to nonexistant file')
 def scrapedatum(dbflong):
     name=dbflong['instrumentName']
-    filename='/home/mstead/deribitscraper/'+name+'.csv'
+    filename='/home/mstead/Dropbox/deribit/'+name+'.csv'
     if not os.path.isfile(filename):
         createdbcsv(dbflong)
     addrowcsv(name)
@@ -89,7 +89,7 @@ def loadheader(name):
         header = json.loads(raw[0][0])
     return header
 def loaddata(name):
-    d = pandas.read_csv('/home/mstead/deribitscraper/'+name+'.csv', header=1)
+    d = pandas.read_csv('/home/mstead/Dropbox/deribit/'+name+'.csv', header=1)
     return d
 def age(d):
     n=d.shape[0]-1
@@ -99,7 +99,7 @@ def ageindays(d):
     return age(d)/spd
 def textme(message='no message'):
     #assumes you have a text file in the same directory called "keys.txt" that has all the relevant stuff in a json-dumped dictionary
-    file = open('/home/mstead/deribitscraper/keys.txt', 'r') 
+    file = open('/home/mstead/Dropbox/deribit/keys.txt', 'r') 
     k=json.loads(file.read())
     account_sid = k['account_sid']
     auth_token = k['auth_token']
