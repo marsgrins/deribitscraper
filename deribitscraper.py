@@ -101,6 +101,7 @@ def textme(message='no message'):
     #assumes you have a text file in the same directory called "keys.txt" that has all the relevant stuff in a json-dumped dictionary
     file = open('/home/mstead/Dropbox/deribit/keys.txt', 'r') 
     k=json.loads(file.read())
+    file.close()
     account_sid = k['account_sid']
     auth_token = k['auth_token']
     to = k['to']
@@ -108,13 +109,24 @@ def textme(message='no message'):
     client = Client(account_sid, auth_token)
     client.messages.create(to=to, from_=from_, body=message)
 def alert(row, name):
-    delay=spd/4
-    if row[4]>row[2]:
+    file = open('/home/mstead/Dropbox/deribit/alertthresholds.txt', 'r') 
+    a=json.loads(file.read())
+    file.close()
+    delay = a['delay']*spd
+    high = a['high']
+    low = a['low']
+    if row[2]/row[4]<low:
         d=loaddata(name)
         if age(d)>delay:
             start=row[0]-delay
-            if d[(d.floattime >= start) & (d.deribitlastprice < d.geminilastprice)].shape[0]==0:
-                textme('Deribit future '+name+' is trading below Gemini spot price')
+            if d[(d.floattime >= start) & ((d.deribitlastprice / d.geminilastprice)<low)].shape[0]==0:
+                textme('Deribit future '+name+' is trading below threshold '+str(low))
+    if row[2]/row[4]>high:
+        d=loaddata(name)
+        if age(d)>delay:
+            start=row[0]-delay
+            if d[(d.floattime >= start) & ((d.deribitlastprice / d.geminilastprice)>high)].shape[0]==0:
+                textme('Deribit future '+name+' is trading above threshold '+str(high))
 if __name__ == "__main__":
     scrapedata()
 
